@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import messagebox
-import random as r
 def button(frame):          #Function to define a button
     b=Button(frame,padx=1,bg="papaya whip",width=3,text="   ",font=('arial',60,'bold'),relief="sunken",bd=10)
     return b
