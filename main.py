@@ -1,124 +1,49 @@
-import random
-
-
-class TicTacToe:
-
-    def __init__(self):
-        self.board = []
-
-    def create_board(self):
-        for i in range(3):
-            row = []
-            for j in range(3):
-                row.append('-')
-            self.board.append(row)
-
-    def get_random_first_player(self):
-        return random.randint(0, 1)
-
-    def fix_spot(self, row, col, player):
-        self.board[row][col] = player
-
-    def is_player_win(self, player):
-        win = None
-
-        n = len(self.board)
-
-        # checking rows
-        for i in range(n):
-            win = True
-            for j in range(n):
-                if self.board[i][j] != player:
-                    win = False
-                    break
-            if win:
-                return win
-
-        # checking columns
-        for i in range(n):
-            win = True
-            for j in range(n):
-                if self.board[j][i] != player:
-                    win = False
-                    break
-            if win:
-                return win
-
-        # checking diagonals
-        win = True
-        for i in range(n):
-            if self.board[i][i] != player:
-                win = False
-                break
-        if win:
-            return win
-
-        win = True
-        for i in range(n):
-            if self.board[i][n - 1 - i] != player:
-                win = False
-                break
-        if win:
-            return win
-        return False
-
-        for row in self.board:
-            for item in row:
-                if item == '-':
-                    return False
-        return True
-
-    def is_board_filled(self):
-        for row in self.board:
-            for item in row:
-                if item == '-':
-                    return False
-        return True
-
-    def swap_player_turn(self, player):
-        return 'X' if player == 'O' else 'O'
-
-    def show_board(self):
-        for row in self.board:
-            for item in row:
-                print(item, end=" ")
-            print()
-
-    def start(self):
-        self.create_board()
-
-        player = 'X' if self.get_random_first_player() == 1 else 'O'
-        while True:
-            print(f"Player {player} turn")
-
-            self.show_board()
-
-            # taking user input
-            row, col = list(
-                map(int, input("Enter row and column numbers to fix spot: ").split()))
-            print()
-
-            # fixing the spot
-            self.fix_spot(row - 1, col - 1, player)
-
-            # checking whether current player is won or not
-            if self.is_player_win(player):
-                print(f"Player {player} wins the game!")
-                break
-
-            # checking whether the game is draw or not
-            if self.is_board_filled():
-                print("Match Draw!")
-                break
-
-            # swapping the turn
-            player = self.swap_player_turn(player)
-
-        # showing the final view of board
-        print()
-        self.show_board()
-
-
-# starting the game
-tic_tac_toe = TicTacToe()
-tic_tac_toe.start()
+from tkinter import *
+from tkinter import messagebox
+import random as r
+def button(frame):          #Function to define a button
+    b=Button(frame,padx=1,bg="papaya whip",width=3,text="   ",font=('arial',60,'bold'),relief="sunken",bd=10)
+    return b
+def change_a():             #Function to change the operand for the next player
+    global a
+    for i in ['O','X']:
+        if not(i==a):
+            a=i
+            break
+def reset():                #Resets the game
+    global a
+    for i in range(3):
+        for j in range(3):
+                b[i][j]["text"]=" "
+                b[i][j]["state"]=NORMAL
+    a=r.choice(['O','X'])
+def check():                #Checks for victory or Draw
+    for i in range(3):
+            if(b[i][0]["text"]==b[i][1]["text"]==b[i][2]["text"]==a or b[0][i]["text"]==b[1][i]["text"]==b[2][i]["text"]==a):
+                    messagebox.showinfo("Congrats!!","'"+a+"' has won")
+                    reset()
+    if(b[0][0]["text"]==b[1][1]["text"]==b[2][2]["text"]==a or b[0][2]["text"]==b[1][1]["text"]==b[2][0]["text"]==a):
+        messagebox.showinfo("Congrats!!","'"+a+"' has won")
+        reset()   
+    elif(b[0][0]["state"]==b[0][1]["state"]==b[0][2]["state"]==b[1][0]["state"]==b[1][1]["state"]==b[1][2]["state"]==b[2][0]["state"]==b[2][1]["state"]==b[2][2]["state"]==DISABLED):
+        messagebox.showinfo("Tied!!","The match ended in a draw")
+        reset()
+def click(row,col):
+        b[row][col].config(text=a,state=DISABLED,disabledforeground=colour[a])
+        check()
+        change_a()
+        label.config(text=a+"'s Chance")
+###############   Main Program #################
+root=Tk()                   #Window defined
+root.title("Tic-Tac-Toe")   #Title given
+a=r.choice(['O','X'])       #Two operators defined
+colour={'O':"deep sky blue",'X':"lawn green"}
+b=[[],[],[]]
+for i in range(3):
+        for j in range(3):
+                b[i].append(button(root))
+                b[i][j].config(command= lambda row=i,col=j:click(row,col))
+                b[i][j].grid(row=i,column=j)
+label=Label(text=a+"'s Chance",font=('arial',20,'bold'))
+label.grid(row=3,column=0,columnspan=3)
+root.mainloop()
